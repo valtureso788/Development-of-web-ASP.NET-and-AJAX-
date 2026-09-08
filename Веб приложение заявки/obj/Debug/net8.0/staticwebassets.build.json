@@ -1,0 +1,77 @@
+{
+  "Version": 1,
+  "Hash": "DIhRfKmsaCfmtLTCUvrOv4IW6aI25tC8B5fRjporj4o=",
+  "Source": "ApplicationPortal",
+  "BasePath": "_content/ApplicationPortal",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "ApplicationPortal\\wwwroot",
+      "Source": "ApplicationPortal",
+      "ContentRoot": "C:\\Users\\Windows\\Desktop\\Веб приложение заявки\\wwwroot\\",
+      "BasePath": "_content/ApplicationPortal",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Windows\\Desktop\\Веб приложение заявки\\wwwroot\\app.js",
+      "SourceId": "ApplicationPortal",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Windows\\Desktop\\Веб приложение заявки\\wwwroot\\",
+      "BasePath": "_content/ApplicationPortal",
+      "RelativePath": "app.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\app.js"
+    },
+    {
+      "Identity": "C:\\Users\\Windows\\Desktop\\Веб приложение заявки\\wwwroot\\index.html",
+      "SourceId": "ApplicationPortal",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Windows\\Desktop\\Веб приложение заявки\\wwwroot\\",
+      "BasePath": "_content/ApplicationPortal",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\Windows\\Desktop\\Веб приложение заявки\\wwwroot\\style.css",
+      "SourceId": "ApplicationPortal",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Windows\\Desktop\\Веб приложение заявки\\wwwroot\\",
+      "BasePath": "_content/ApplicationPortal",
+      "RelativePath": "style.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\style.css"
+    }
+  ]
+}

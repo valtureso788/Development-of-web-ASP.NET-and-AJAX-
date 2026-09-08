@@ -1,0 +1,26 @@
+C:\Users\Windows\Desktop\Веб приложение заявки\bin\Debug\net8.0\appsettings.json
+C:\Users\Windows\Desktop\Веб приложение заявки\bin\Debug\net8.0\ApplicationPortal.exe
+C:\Users\Windows\Desktop\Веб приложение заявки\bin\Debug\net8.0\ApplicationPortal.deps.json
+C:\Users\Windows\Desktop\Веб приложение заявки\bin\Debug\net8.0\ApplicationPortal.runtimeconfig.json
+C:\Users\Windows\Desktop\Веб приложение заявки\bin\Debug\net8.0\ApplicationPortal.dll
+C:\Users\Windows\Desktop\Веб приложение заявки\bin\Debug\net8.0\ApplicationPortal.pdb
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\Веб приложение заявки.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\Веб приложение заявки.AssemblyInfoInputs.cache
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\Веб приложение заявки.AssemblyInfo.cs
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\Веб приложение заявки.csproj.CoreCompileInputs.cache
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\ApplicationPortal.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\staticwebassets\msbuild.ApplicationPortal.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\staticwebassets\msbuild.build.ApplicationPortal.props
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.ApplicationPortal.props
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.ApplicationPortal.props
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\scopedcss\bundle\ApplicationPortal.styles.css
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\ApplicationPortal.dll
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\refint\ApplicationPortal.dll
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\ApplicationPortal.pdb
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\Веб приложение заявки.genruntimeconfig.cache
+C:\Users\Windows\Desktop\Веб приложение заявки\obj\Debug\net8.0\ref\ApplicationPortal.dll
+C:\Users\Windows\Desktop\Веб приложение заявки\bin\Debug\net8.0\ApplicationPortal.staticwebassets.runtime.json
+C:\Users\Windows\Desktop\Веб приложение заявки\bin\Debug\net8.0\App_Data\applications.json
