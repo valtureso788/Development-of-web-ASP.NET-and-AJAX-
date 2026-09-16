@@ -1,0 +1,206 @@
+@{
+    ViewData["Title"] = "Домашнее задание 2 - HTML элементы";
+}
+
+<div class="container my-4">
+    <!-- Приветственный баннер -->
+    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm border">
+        <div class="container-fluid py-2">
+            <span class="badge bg-success mb-2 fs-6">ASP.NET Core 8.0</span>
+            <h1 class="display-5 fw-bold text-primary">Веб-приложение с расширенными HTML элементами</h1>
+            <p class="col-md-10 fs-5 text-muted">
+                На этой странице продемонстрировано добавление различных структурных и интерактивных HTML-элементов:
+                форм, таблиц, списков, карточек, индикаторов прогресса и кнопок управления.
+            </p>
+            <a class="btn btn-primary btn-lg" href="#registration-form" role="button">Перейти к форме</a>
+            <a class="btn btn-outline-secondary btn-lg ms-2" href="#data-table" role="button">Смотреть таблицу</a>
+        </div>
+    </div>
+
+    <!-- Информационные карточки -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">📁 Модуль 1: Разметка</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Использование семантических тегов HTML5, заголовков, абзацев и контейнеров для структурирования документа.</p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Семантика <span class="badge bg-primary rounded-pill">OK</span></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">Валидность <span class="badge bg-success rounded-pill">100%</span></li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <button class="btn btn-sm btn-outline-primary w-100">Подробнее</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">📝 Модуль 2: Формы</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Элементы ввода информации: текстовые поля, списки выбора, радиокнопки, флажки и переключатели.</p>
+                    <div class="mb-2">
+                        <label class="form-label small">Прогресс заполнения:</label>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <button class="btn btn-sm btn-outline-success w-100">Заполнить</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">📊 Модуль 3: Таблицы</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Представление структурированных данных в виде адаптивных таблиц со статусами и действиями.</p>
+                    <div class="alert alert-warning py-2 mb-0" role="alert">
+                        <small>Всего записей в базе: <strong>3 активных</strong></small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <button class="btn btn-sm btn-outline-warning text-dark w-100">Экспорт данных</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Интерактивная HTML форма -->
+    <div id="registration-form" class="card shadow-sm mb-5">
+        <div class="card-header bg-light">
+            <h4 class="mb-0 text-secondary">Форма регистрации участника (HTML Form Elements)</h4>
+        </div>
+        <div class="card-body">
+            <form onsubmit="event.preventDefault(); alert('Форма отправлена!');">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="userName" class="form-label fw-bold">Имя пользователя:</label>
+                        <input type="text" class="form-control" id="userName" placeholder="Иван Иванов" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="userEmail" class="form-label fw-bold">Электронная почта:</label>
+                        <input type="email" class="form-control" id="userEmail" placeholder="ivanov@example.com" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="roleSelect" class="form-label fw-bold">Направление обучения:</label>
+                        <select id="roleSelect" class="form-select">
+                            <option selected>ASP.NET Core & C#</option>
+                            <option>Frontend & JavaScript</option>
+                            <option>Базы данных и SQL</option>
+                            <option>Архитектура ПО</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="birthDate" class="form-label fw-bold">Дата начала обучения:</label>
+                        <input type="date" class="form-control" id="birthDate" value="2026-09-08">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="experienceRange" class="form-label fw-bold">Опыт программирования (1-5):</label>
+                        <input type="range" class="form-range" min="1" max="5" id="experienceRange">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold d-block">Формат участия:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="studyFormat" id="formatOnline" value="online" checked>
+                        <label class="form-check-label" for="formatOnline">Онлайн</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="studyFormat" id="formatOffline" value="offline">
+                        <label class="form-check-label" for="formatOffline">Очно</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="studyFormat" id="formatHybrid" value="hybrid">
+                        <label class="form-check-label" for="formatHybrid">Смешанный</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="comments" class="form-label fw-bold">Комментарии / Пожелания к курсу:</label>
+                    <textarea class="form-control" id="comments" rows="3" placeholder="Введите дополнительные сведения..."></textarea>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="termsCheck" checked>
+                    <label class="form-check-label" for="termsCheck">Согласен на обработку персональных данных</label>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success px-4">Отправить заявку</button>
+                    <button type="reset" class="btn btn-outline-secondary px-3">Сбросить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Таблица данных -->
+    <div id="data-table" class="card shadow-sm mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 text-secondary">Таблица пользователей (HTML Table)</h4>
+            <span class="badge bg-secondary">Данные обновлены</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0 align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Пользователь</th>
+                            <th scope="col">Роль</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col">Дата подключения</th>
+                            <th scope="col" class="text-center">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td><strong>Алексей Смирнов</strong><br><small class="text-muted">alex@aspnet.dev</small></td>
+                            <td>Разработчик ASP.NET</td>
+                            <td><span class="badge bg-success">Активен</span></td>
+                            <td>01.09.2026</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary">Просмотр</button>
+                                <button class="btn btn-sm btn-outline-danger">Удалить</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td><strong>Елена Васильева</strong><br><small class="text-muted">elena@webtech.org</small></td>
+                            <td>Frontend инженер</td>
+                            <td><span class="badge bg-warning text-dark">На проверке</span></td>
+                            <td>03.09.2026</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary">Просмотр</button>
+                                <button class="btn btn-sm btn-outline-danger">Удалить</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td><strong>Дмитрий Кузнецов</strong><br><small class="text-muted">dmitry@database.io</small></td>
+                            <td>Администратор БД</td>
+                            <td><span class="badge bg-success">Активен</span></td>
+                            <td>05.09.2026</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary">Просмотр</button>
+                                <button class="btn btn-sm btn-outline-danger">Удалить</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

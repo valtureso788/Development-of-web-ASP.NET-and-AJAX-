@@ -1,0 +1,659 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASP.NET Core: Жизненный цикл, Форма и Middleware</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0d1117;
+            color: #e6edf3;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            padding-bottom: 40px;
+        }
+        .header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #58a6ff;
+        }
+        .brand-badge {
+            background: #238636;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .header-stats {
+            display: flex;
+            gap: 12px;
+        }
+        .stat-badge {
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #8b949e;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .stat-badge strong {
+            color: #e6edf3;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+        .hero {
+            background: linear-gradient(135deg, #161b22 0%, #1f2937 100%);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+        .hero-text h1 {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            color: #f0f6fc;
+        }
+        .hero-text p {
+            color: #8b949e;
+            font-size: 0.95rem;
+            max-width: 650px;
+        }
+        .pipeline-box {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 16px;
+            min-width: 380px;
+        }
+        .pipeline-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #8b949e;
+            margin-bottom: 10px;
+        }
+        .pipeline-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        .pipeline-node {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        .pipeline-node.node-blue { color: #58a6ff; border-color: rgba(88,166,255,0.4); }
+        .pipeline-node.node-yellow { color: #d29922; border-color: rgba(210,153,34,0.4); }
+        .pipeline-node.node-green { color: #3fb950; border-color: rgba(63,185,80,0.4); }
+        .pipeline-arrow { color: #8b949e; font-weight: bold; }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-header {
+            background: #21262d;
+            padding: 14px 20px;
+            border-bottom: 1px solid #30363d;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8b949e;
+            margin-bottom: 6px;
+        }
+        .form-control, .form-select, textarea {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #e6edf3;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+        .form-control:focus, .form-select:focus, textarea:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88,166,255,0.3);
+        }
+        .btn {
+            background: #238636;
+            color: #fff;
+            border: 1px solid rgba(240,246,252,0.1);
+            border-radius: 6px;
+            padding: 9px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover {
+            background: #2ea043;
+        }
+        .btn-secondary {
+            background: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+        }
+        .btn-secondary:hover {
+            background: #30363d;
+        }
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .di-box {
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1px solid #30363d;
+        }
+        .di-box-transient {
+            background: rgba(244, 63, 94, 0.08);
+            border-color: rgba(244, 63, 94, 0.3);
+        }
+        .di-box-scoped {
+            background: rgba(56, 189, 248, 0.08);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        .di-box-singleton {
+            background: rgba(52, 211, 153, 0.08);
+            border-color: rgba(52, 211, 153, 0.3);
+        }
+        .di-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-transient { background: #f43f5e; color: #fff; }
+        .badge-scoped { background: #0284c7; color: #fff; }
+        .badge-singleton { background: #059669; color: #fff; }
+
+        .di-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            margin-top: 4px;
+        }
+        .di-row span.label {
+            color: #8b949e;
+        }
+        .guid-code {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            background: #0d1117;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #30363d;
+            font-size: 0.8rem;
+            color: #58a6ff;
+        }
+        .di-note {
+            font-size: 0.75rem;
+            margin-top: 8px;
+            color: #8b949e;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            border: 1px solid transparent;
+        }
+        .alert-success {
+            background: rgba(35, 134, 54, 0.15);
+            border-color: #238636;
+            color: #3fb950;
+        }
+        .alert-info {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #0284c7;
+            color: #58a6ff;
+        }
+        .alert-danger {
+            background: rgba(248, 81, 73, 0.15);
+            border-color: #da3633;
+            color: #f85149;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        th {
+            background: #21262d;
+            text-align: left;
+            padding: 8px 12px;
+            color: #8b949e;
+            border-bottom: 1px solid #30363d;
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #21262d;
+            color: #c9d1d9;
+        }
+        .status-pill {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        .status-200 { background: rgba(63, 185, 80, 0.2); color: #3fb950; }
+        .status-400 { background: rgba(248, 81, 73, 0.2); color: #f85149; }
+        .event-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+        }
+        .event-card .title {
+            font-weight: 700;
+            font-size: 0.82rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .event-card .desc {
+            font-size: 0.78rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="brand">
+            <span>⚙️ ASP.NET Core</span>
+            <span class="brand-badge">Lifecycle & Middleware Demo</span>
+        </div>
+        <div class="header-stats">
+            <div class="stat-badge">Хост: <strong id="navHostStatus" style="color: #3fb950;">Running</strong></div>
+            <div class="stat-badge">Аптайм: <strong id="navUptime">00ч 00м 00с</strong></div>
+            <div class="stat-badge">Платформа: <strong>.NET 10.0 (Empty Web)</strong></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Блок описания и конвейера -->
+        <div class="hero">
+            <div class="hero-text">
+                <h1>Жизненный цикл приложения, Форма и Middleware</h1>
+                <p>
+                    Проект создан из <strong>пустого шаблона ASP.NET Core</strong>. Показывает прохождение HTTP-запроса через кастомный конвейер <strong>Middleware</strong>, работу интерактивной формы и сопоставление 3-х жизненных циклов служб <strong>Dependency Injection</strong>.
+                </p>
+            </div>
+            <div class="pipeline-box">
+                <div class="pipeline-title">Схема конвейера обработки формы:</div>
+                <div class="pipeline-flow">
+                    <div class="pipeline-node node-blue">HTTP Request</div>
+                    <div class="pipeline-arrow">&rarr;</div>
+                    <div class="pipeline-node node-yellow">Lifecycle Mid</div>
+                    <div class="pipeline-arrow">&rarr;</div>
+                    <div class="pipeline-node node-yellow">Form Mid</div>
+                    <div class="pipeline-arrow">&rarr;</div>
+                    <div class="pipeline-node node-green">Endpoint (DI)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Левая колонка: Форма -->
+            <div class="card">
+                <div class="card-header">
+                    <span>📝 Форма обратной связи</span>
+                    <span style="font-family: monospace; font-size: 0.8rem; color: #58a6ff;">POST /submit</span>
+                </div>
+                <div class="card-body">
+                    <div id="alertBox" class="alert alert-success" style="display: block;">
+        <div style="font-weight: 700; margin-bottom: 4px;">✓ Форма успешно обработана Middleware и сервером!</div>
+        <div>Request ID: <code style="color: #58a6ff;">08febf84</code> | Валидировано Middleware: <strong>Да (FormProcessingMiddleware)</strong></div>
+        <div>Scoped Operation ID этого запроса: <code style="color: #38bdf8;">e49ef858-812a-45ea-aff4-2f855f6bcaf4</code></div>
+    </div>
+
+                    <form id="feedbackForm" action="/submit" method="post">
+                        <div class="form-group">
+                            <label>Ваше имя / ФИО <span style="color: #f85149;">*</span></label>
+                            <input type="text" class="form-control" name="name" id="fieldName" placeholder="Например: Алексей Смирнов" value="Алексей Смирнов" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Электронная почта <span style="color: #f85149;">*</span></label>
+                            <input type="email" class="form-control" name="email" id="fieldEmail" placeholder="alexey@domain.ru" value="alexey.smirnov@example.com" required>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="form-group">
+                                <label>Категория запроса</label>
+                                <select class="form-select" name="category" id="fieldCategory">
+                                    <option value="Вопрос по Middleware">Вопрос по Middleware</option>
+                                    <option value="Жизненный цикл DI">Жизненный цикл DI</option>
+                                    <option value="Архитектура ASP.NET Core">Архитектура ASP.NET Core</option>
+                                    <option value="Предложение по проекту">Предложение по проекту</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Приоритет</label>
+                                <select class="form-select" name="priority" id="fieldPriority">
+                                    <option value="1">Низкий (1)</option>
+                                    <option value="2" selected>Обычный (2)</option>
+                                    <option value="3">Высокий (3)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Текст обращения / Вопрос</label>
+                            <textarea name="message" id="fieldMessage" rows="3" placeholder="Опишите вопрос для передачи через конвейер Middleware...">Проверка сквозного жизненного цикла конвейера Middleware и времени жизни DI.</textarea>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 8px;">
+                            <button type="submit" class="btn" id="btnSubmit">
+                                🚀 Отправить форму
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btnDemo">
+                                ⚡ Заполнить демо-данными
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Правая колонка: DI Lifetimes -->
+            <div class="card">
+                <div class="card-header">
+                    <span>🔬 Жизненные циклы служб (DI Lifetimes)</span>
+                    <button class="btn btn-secondary btn-sm" id="btnRefreshLifecycle">🔄 Обновить</button>
+                </div>
+                <div class="card-body">
+                    <p style="font-size: 0.85rem; color: #8b949e; margin-bottom: 14px;">
+                        Каждый тип времени жизни DI по-разному управляет созданием и переиспользованием экземпляров:
+                    </p>
+
+                    <!-- Transient -->
+                    <div class="di-box di-box-transient">
+                        <div class="di-header">
+                            <span class="badge badge-transient">Transient (Временный)</span>
+                            <span style="font-size: 0.75rem; color: #f43f5e; font-weight: 600;">Каждый раз новый экземпляр</span>
+                        </div>
+                        <div class="di-row">
+                            <span class="label">Инъекция 1 (Endpoint):</span>
+                            <span class="guid-code" id="idTransient1">загрузка...</span>
+                        </div>
+                        <div class="di-row">
+                            <span class="label">Инъекция 2 (Service):</span>
+                            <span class="guid-code" id="idTransient2">загрузка...</span>
+                        </div>
+                        <div class="di-note" style="color: #f43f5e;">
+                            ⚠ GUID различаются даже внутри одного и того же HTTP-запроса!
+                        </div>
+                    </div>
+
+                    <!-- Scoped -->
+                    <div class="di-box di-box-scoped">
+                        <div class="di-header">
+                            <span class="badge badge-scoped">Scoped (Область запроса)</span>
+                            <span style="font-size: 0.75rem; color: #38bdf8; font-weight: 600;">Один на весь HTTP-запрос</span>
+                        </div>
+                        <div class="di-row">
+                            <span class="label">Инъекция 1 (Endpoint):</span>
+                            <span class="guid-code" id="idScoped1">загрузка...</span>
+                        </div>
+                        <div class="di-row">
+                            <span class="label">Инъекция 2 (Service):</span>
+                            <span class="guid-code" id="idScoped2">загрузка...</span>
+                        </div>
+                        <div class="di-note" style="color: #38bdf8;">
+                            ✓ GUID совпадают в рамках одного запроса, но меняются при следующем клике!
+                        </div>
+                    </div>
+
+                    <!-- Singleton -->
+                    <div class="di-box di-box-singleton">
+                        <div class="di-header">
+                            <span class="badge badge-singleton">Singleton (Одиночка)</span>
+                            <span style="font-size: 0.75rem; color: #34d399; font-weight: 600;">Один на всё время работы</span>
+                        </div>
+                        <div class="di-row">
+                            <span class="label">Инъекция 1 (Endpoint):</span>
+                            <span class="guid-code" id="idSingleton1">загрузка...</span>
+                        </div>
+                        <div class="di-row">
+                            <span class="label">Инъекция 2 (Service):</span>
+                            <span class="guid-code" id="idSingleton2">загрузка...</span>
+                        </div>
+                        <div class="di-note" style="color: #34d399;">
+                            🔒 GUID остается строго постоянным между любыми запросами!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Нижний блок: Журнал Middleware и События Хоста -->
+        <div class="grid-2">
+            <!-- Журнал запросов через Middleware -->
+            <div class="card">
+                <div class="card-header">
+                    <span>📋 Журнал конвейера Middleware (Pipeline Requests)</span>
+                    <span id="reqCount" style="font-size: 0.8rem; color: #8b949e;">0 запросов</span>
+                </div>
+                <div class="card-body" style="padding: 0; max-height: 280px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Метод</th>
+                                <th>Путь</th>
+                                <th>Статус</th>
+                                <th>Время</th>
+                                <th>Метка</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #8b949e; padding: 20px;">
+                                    Журнал пуст. Выполните отправку формы.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Жизненный цикл хоста -->
+            <div class="card">
+                <div class="card-header">
+                    <span>⚡ События IHostApplicationLifetime</span>
+                    <span style="font-size: 0.8rem; color: #3fb950;">Active</span>
+                </div>
+                <div class="card-body" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div class="event-card">
+                        <div class="title" style="color: #3fb950;">
+                            <span>● ApplicationStarted</span>
+                            <span style="color: #8b949e; font-weight: normal;" id="eventStartedTime">Запущен</span>
+                        </div>
+                        <div class="desc">Хост успешно сконфигурирован, DI службы инициализированы, открыто прослушивание портов.</div>
+                    </div>
+                    <div class="event-card">
+                        <div class="title" style="color: #d29922;">
+                            <span>○ ApplicationStopping</span>
+                            <span style="color: #8b949e; font-weight: normal;">Ожидание SIGINT</span>
+                        </div>
+                        <div class="desc">Регистратор корректной остановки (Graceful Shutdown) для завершения фоновых задач.</div>
+                    </div>
+                    <div class="event-card">
+                        <div class="title" style="color: #f85149;">
+                            <span>○ ApplicationStopped</span>
+                            <span style="color: #8b949e; font-weight: normal;">Регистратор</span>
+                        </div>
+                        <div class="desc">Регистратор завершения работы всех служб и освобождения неуправляемых ресурсов хоста.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        async function fetchLifecycleData() {
+            try {
+                const response = await fetch('/api/lifecycle');
+                const data = await response.json();
+
+                document.getElementById('navHostStatus').textContent = data.hostStatus;
+                document.getElementById('navUptime').textContent = data.uptime;
+
+                document.getElementById('idTransient1').textContent = data.di.transient1;
+                document.getElementById('idTransient2').textContent = data.di.transient2;
+                document.getElementById('idScoped1').textContent = data.di.scoped1;
+                document.getElementById('idScoped2').textContent = data.di.scoped2;
+                document.getElementById('idSingleton1').textContent = data.di.singleton1;
+                document.getElementById('idSingleton2').textContent = data.di.singleton2;
+
+                if (data.events && data.events.length > 0) {
+                    const ev = data.events[0];
+                    document.getElementById('eventStartedTime').textContent = new Date(ev.timestamp).toLocaleTimeString();
+                }
+
+                const tbody = document.getElementById('logTableBody');
+                if (data.recentRequests && data.recentRequests.length > 0) {
+                    document.getElementById('reqCount').textContent = data.recentRequests.length + ' записей';
+                    tbody.innerHTML = '';
+                    data.recentRequests.forEach(req => {
+                        const tr = document.createElement('tr');
+                        const statusClass = req.statusCode < 400 ? 'status-200' : 'status-400';
+                        const methodColor = req.method === 'POST' ? '#38bdf8' : '#8b949e';
+                        tr.innerHTML = `
+                            <td><span class="guid-code">${req.id}</span></td>
+                            <td style="color: ${methodColor}; font-weight: 600;">${req.method}</td>
+                            <td><code>${req.path}</code></td>
+                            <td><span class="status-pill ${statusClass}">${req.statusCode}</span></td>
+                            <td>${req.elapsedMilliseconds} ms</td>
+                            <td style="color: #8b949e;">${new Date(req.timestamp).toLocaleTimeString()}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error('Ошибка:', err);
+            }
+        }
+
+        // Заполнение демо-данными
+        document.getElementById('btnDemo').addEventListener('click', () => {
+            document.getElementById('fieldName').value = 'Алексей Смирнов';
+            document.getElementById('fieldEmail').value = 'alexey.smirnov@example.com';
+            document.getElementById('fieldCategory').value = 'Вопрос по Middleware';
+            document.getElementById('fieldPriority').value = '3';
+            document.getElementById('fieldMessage').value = 'Проверка сквозного жизненного цикла конвейера Middleware и времени жизни DI.';
+        });
+
+        // Отправка формы через AJAX
+        document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertBox = document.getElementById('alertBox');
+            alertBox.style.display = 'block';
+            alertBox.className = 'alert alert-info';
+            alertBox.textContent = '⏳ Передача запроса через конвейер Middleware...';
+
+            const formData = new FormData(e.target);
+            try {
+                const res = await fetch('/submit', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                const result = await res.json();
+                if (res.ok) {
+                    alertBox.className = 'alert alert-success';
+                    alertBox.innerHTML = `
+                        <div style="font-weight: 700; margin-bottom: 4px;">✓ Форма успешно обработана Middleware и сервером!</div>
+                        <div>Request ID: <code style="color: #58a6ff;">${result.requestId}</code> | Валидировано Middleware: <strong>${result.middlewareValidated ? 'Да' : 'Нет'}</strong></div>
+                        <div>Scoped Operation ID этого запроса: <code style="color: #38bdf8;">${result.scopedOperationId}</code></div>
+                    `;
+                    await fetchLifecycleData();
+                } else {
+                    alertBox.className = 'alert alert-danger';
+                    alertBox.textContent = 'Ошибка: ' + (result.message || 'Ошибка валидации');
+                }
+            } catch (err) {
+                alertBox.className = 'alert alert-danger';
+                alertBox.textContent = 'Сетевая ошибка: ' + err.message;
+            }
+        });
+
+        document.getElementById('btnRefreshLifecycle').addEventListener('click', fetchLifecycleData);
+
+        // Мгновенная загрузка данных
+        fetchLifecycleData();
+        setInterval(fetchLifecycleData, 4000);
+    </script>
+</body>
+</html>
+
+

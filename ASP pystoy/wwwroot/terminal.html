@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Terminal Console Lifecycle</title>
+    <style>
+        body {
+            background-color: #0c0c0c;
+            color: #cccccc;
+            font-family: "Consolas", "Courier New", monospace;
+            padding: 24px;
+            margin: 0;
+            font-size: 13.5px;
+            line-height: 1.45;
+        }
+        .terminal-header {
+            background: #1f1f1f;
+            border: 1px solid #333;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+        .terminal-title {
+            color: #999;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        .terminal-body {
+            background: #0c0c0c;
+            border: 1px solid #333;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            padding: 16px;
+        }
+        .info { color: #569cd6; }
+        .success { color: #4ec9b0; }
+        .warn { color: #dcdcaa; }
+        .error { color: #f44747; }
+        .gray { color: #6a9955; }
+        .box-green {
+            color: #4ec9b0;
+            border: 1px solid #4ec9b0;
+            padding: 6px 12px;
+            margin: 10px 0;
+            background: rgba(78, 201, 176, 0.05);
+        }
+        .box-yellow {
+            color: #dcdcaa;
+            border: 1px solid #dcdcaa;
+            padding: 6px 12px;
+            margin: 10px 0;
+            background: rgba(220, 220, 170, 0.05);
+        }
+        .box-red {
+            color: #f44747;
+            border: 1px solid #f44747;
+            padding: 6px 12px;
+            margin: 10px 0;
+            background: rgba(244, 71, 71, 0.05);
+        }
+        .bold { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="terminal-header">
+        <span class="circle red"></span>
+        <span class="circle yellow"></span>
+        <span class="circle green"></span>
+        <span class="terminal-title">PowerShell - ASP.NET Core Host & Middleware Lifecycle Output</span>
+    </div>
+    <div class="terminal-body">
+        <div>PS C:\Users\Windows\Desktop\ASP pystoy> <span class="bold" style="color: #fff;">dotnet run --launch-profile "http"</span></div>
+        <div class="gray">Сборка завершена без ошибок. Запуск процесса хоста...</div>
+        <div><span class="info">info</span>: Microsoft.Hosting.Lifetime[14]</div>
+        <div>      Now listening on: http://localhost:5161</div>
+        <div><span class="info">info</span>: Microsoft.Hosting.Lifetime[0]</div>
+        <div>      Application started. Press Ctrl+C to shut down.</div>
+        <div><span class="info">info</span>: Microsoft.Hosting.Lifetime[0]</div>
+        <div>      Hosting environment: Development</div>
+        <div><span class="info">info</span>: Microsoft.Hosting.Lifetime[0]</div>
+        <div>      Content root path: C:\Users\Windows\Desktop\ASP pystoy</div>
+        
+        <div class="box-green">
+╔═══════════════════════════════════════════════════════════════════════════════════╗<br/>
+║                   [HOST LIFECYCLE: ApplicationStarted]                            ║<br/>
+║  Хост приложения ASP.NET Core полностью сконфигурирован и успешно запущен!        ║<br/>
+║  Время старта: 13.09.2026 15:23:07                                                ║<br/>
+║  Службы DI, кастомные Middleware и обработчики маршрутов активны.                  ║<br/>
+╚═══════════════════════════════════════════════════════════════════════════════════╝
+        </div>
+
+        <div class="gray">// ─── 1. HTTP-запрос к форме (GET /) через Middleware ──────────────────────────</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.RequestLifecycleMiddleware[0]</div>
+        <div>      <span class="success">[MIDDLEWARE IN]</span> -&gt; Request 1eae3a41: GET / at 15:23:13.574</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.RequestLifecycleMiddleware[0]</div>
+        <div>      <span class="success">[MIDDLEWARE OUT]</span> &lt;- Request 1eae3a41: 200 completed in 4.52 ms</div>
+        <br/>
+
+        <div class="gray">// ─── 2. Отправка формы (POST /submit) через FormProcessingMiddleware ─────────────</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.RequestLifecycleMiddleware[0]</div>
+        <div>      <span class="success">[MIDDLEWARE IN]</span> -&gt; Request 08febf84: POST /submit at 15:23:25.110</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.FormProcessingMiddleware[0]</div>
+        <div>      <span class="bold" style="color: #ce9178;">[FORM MIDDLEWARE]</span> Перехвачена отправка формы. Анализ данных запроса...</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.FormProcessingMiddleware[0]</div>
+        <div>      <span class="bold" style="color: #ce9178;">[FORM MIDDLEWARE]</span> Получены поля: Имя='Алексей Смирнов', Email='alexey.smirnov@example.com', Категория='Вопрос по Middleware'</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.RequestLifecycleMiddleware[0]</div>
+        <div>      <span class="success">[MIDDLEWARE OUT]</span> &lt;- Request 08febf84: 200 completed in 15.95 ms (Scoped ID: e49ef858-812a-45ea)</div>
+        <br/>
+
+        <div class="gray">// ─── 3. Валидация формы в Middleware (POST /submit с пустыми полями) ─────────────</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.RequestLifecycleMiddleware[0]</div>
+        <div>      <span class="success">[MIDDLEWARE IN]</span> -&gt; Request 3e5c9863: POST /submit at 15:23:38.931</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.FormProcessingMiddleware[0]</div>
+        <div>      <span class="bold" style="color: #ce9178;">[FORM MIDDLEWARE]</span> Перехвачена отправка формы. Анализ данных запроса...</div>
+        <div><span class="warn">warn</span>: ASP_pystoy.Middleware.FormProcessingMiddleware[0]</div>
+        <div>      <span class="warn">[FORM MIDDLEWARE VALIDATION]</span> Ошибка валидации: Имя или Email не заполнены!</div>
+        <div><span class="info">info</span>: ASP_pystoy.Middleware.RequestLifecycleMiddleware[0]</div>
+        <div>      <span class="error">[MIDDLEWARE OUT]</span> &lt;- Request 3e5c9863: 400 completed in 16.62 ms</div>
+        <br/>
+
+        <div class="gray">// ─── 4. Корректная остановка хоста (IHostApplicationLifetime Graceful Shutdown) ──</div>
+        <div><span class="info">info</span>: Microsoft.Hosting.Lifetime[0]</div>
+        <div>      Application is shutting down...</div>
+
+        <div class="box-yellow">
+╔═══════════════════════════════════════════════════════════════════════════════════╗<br/>
+║                   [HOST LIFECYCLE: ApplicationStopping]                           ║<br/>
+║  Получен сигнал завершения работы приложения (SIGINT/Ctrl+C).                     ║<br/>
+║  Завершение активных запросов и освобождение ресурсов...                          ║<br/>
+╚═══════════════════════════════════════════════════════════════════════════════════╝
+        </div>
+
+        <div class="box-red">
+╔═══════════════════════════════════════════════════════════════════════════════════╗<br/>
+║                   [HOST LIFECYCLE: ApplicationStopped]                            ║<br/>
+║  Хост приложения ASP.NET Core завершил работу. Ресурсы освобождены.               ║<br/>
+╚═══════════════════════════════════════════════════════════════════════════════════╝
+        </div>
+    </div>
+</body>
+</html>

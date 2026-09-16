@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Портал заявок и анкет | ASP.NET + AJAX</title>
+  
+  <!-- Шрифты Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Иконки Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Анимация конфетти -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Фоновые декоративные свечения -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Шапка сайта -->
+  <header class="app-header no-print">
+    <div class="header-container">
+      <div class="brand" id="nav-home">
+        <div class="logo-icon">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">QuestPortal</span>
+          <span class="brand-subtitle">ASP.NET Core &bull; AJAX Server</span>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <button type="button" class="nav-btn active" id="nav-create-btn">
+          <i data-lucide="plus-circle"></i>
+          <span>Новая заявка</span>
+        </button>
+        <button type="button" class="nav-btn" id="nav-history-btn">
+          <i data-lucide="archive"></i>
+          <span>История анкет <span class="badge-count" id="history-counter">0</span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- ==================== ЭКРАН 1: ФОРМА ЗАЯВКИ ==================== -->
+    <section id="screen-form" class="app-screen active">
+      <div class="screen-header">
+        <div class="badge-pill">
+          <i data-lucide="zap"></i>
+          <span>ASP.NET Web API &bull; Асинхронная отправка AJAX</span>
+        </div>
+        <h1 class="page-title">Подача официальной заявки</h1>
+        <p class="page-desc">Заполните анкетные данные ниже. После отправки запрос будет передан на сервер ASP.NET через AJAX, после чего мгновенно отобразятся подтверждение и готовая анкета.</p>
+      </div>
+
+      <!-- Глобальное предупреждение об ошибках сервера -->
+      <div id="server-error-banner" class="alert-banner" style="display: none;">
+        <i data-lucide="alert-circle"></i>
+        <div class="alert-text">
+          <strong>Ошибка валидации на сервере</strong>
+          <span id="server-error-message">Пожалуйста, проверьте введённые данные.</span>
+        </div>
+      </div>
+
+      <form id="application-form" class="styled-form" novalidate>
+        <input type="hidden" id="appId" name="id" value="">
+        
+        <!-- Секция 1: Фотография и основные данные -->
+        <div class="form-section">
+          <div class="section-title">
+            <i data-lucide="user"></i>
+            <h2>1. Персональная информация</h2>
+          </div>
+
+          <div class="avatar-upload-box">
+            <div class="avatar-preview-wrap">
+              <img id="avatar-preview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>" alt="Превью фото">
+              <label for="avatar-input" class="avatar-upload-btn" title="Загрузить фотографию">
+                <i data-lucide="camera"></i>
+              </label>
+              <input type="file" id="avatar-input" accept="image/*" class="sr-only">
+            </div>
+            <div class="avatar-info">
+              <label class="form-label" for="avatar-input">Фотография соискателя</label>
+              <p class="form-hint">Загрузите портретное фото (JPG, PNG или WebP). Если фото нет, будет использован стандартный аватар.</p>
+              <button type="button" class="btn-text-danger" id="remove-avatar-btn" style="display: none;">
+                <i data-lucide="trash-2"></i> Удалить фото
+              </button>
+            </div>
+          </div>
+
+          <div class="form-grid cols-2">
+            <div class="form-group">
+              <label for="fullName" class="form-label required">Фамилия, Имя и Отчество</label>
+              <div class="input-with-icon">
+                <i data-lucide="user-check"></i>
+                <input type="text" id="fullName" name="fullName" placeholder="Константинопольский Александр Сергеевич" required>
+              </div>
+              <span class="field-error" id="error-fullName"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="birthDate" class="form-label required">Дата рождения</label>
+              <div class="input-with-icon">
+                <i data-lucide="calendar"></i>
+                <input type="date" id="birthDate" name="birthDate" required>
+              </div>
+              <span class="field-error" id="error-birthDate"></span>
+            </div>
+          </div>
+
+          <div class="form-grid cols-2">
+            <div class="form-group">
+              <label for="gender" class="form-label required">Пол</label>
+              <div class="input-with-icon">
+                <i data-lucide="users"></i>
+                <select id="gender" name="gender" required>
+                  <option value="" disabled selected>Выберите пол</option>
+                  <option value="Мужской">Мужской</option>
+                  <option value="Женский">Женский</option>
+                </select>
+              </div>
+              <span class="field-error" id="error-gender"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="city" class="form-label required">Город проживания</label>
+              <div class="input-with-icon">
+                <i data-lucide="map-pin"></i>
+                <input type="text" id="city" name="city" placeholder="Москва / Санкт-Петербург / Казань..." required>
+              </div>
+              <span class="field-error" id="error-city"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Секция 2: Контакты -->
+        <div class="form-section">
+          <div class="section-title">
+            <i data-lucide="phone"></i>
+            <h2>2. Контактные данные</h2>
+          </div>
+
+          <div class="form-grid cols-3">
+            <div class="form-group">
+              <label for="phone" class="form-label required">Номер телефона</label>
+              <div class="input-with-icon">
+                <i data-lucide="phone-call"></i>
+                <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" required>
+              </div>
+              <span class="field-error" id="error-phone"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label required">Электронная почта</label>
+              <div class="input-with-icon">
+                <i data-lucide="mail"></i>
+                <input type="email" id="email" name="email" placeholder="alexander@domain.ru" required>
+              </div>
+              <span class="field-error" id="error-email"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="telegram" class="form-label">Telegram</label>
+              <div class="input-with-icon">
+                <i data-lucide="send"></i>
+                <input type="text" id="telegram" name="telegram" placeholder="@alex_dev">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Секция 3: Профессиональный профиль -->
+        <div class="form-section">
+          <div class="section-title">
+            <i data-lucide="briefcase"></i>
+            <h2>3. Направление и компетенции</h2>
+          </div>
+
+          <div class="form-grid cols-3">
+            <div class="form-group">
+              <label for="category" class="form-label required">Сфера / Направление</label>
+              <div class="input-with-icon">
+                <i data-lucide="layers"></i>
+                <select id="category" name="category" required>
+                  <option value="" disabled selected>Выберите направление</option>
+                  <option value="IT & Программирование">IT & Программирование</option>
+                  <option value="Дизайн & UX/UI">Дизайн & UX/UI</option>
+                  <option value="Маркетинг & PR">Маркетинг & PR</option>
+                  <option value="Управление проектами">Управление проектами / PM</option>
+                  <option value="Продажи & Работа с клиентами">Продажи & Работа с клиентами</option>
+                  <option value="Аналитика данных">Аналитика данных</option>
+                  <option value="Финансы & Бухгалтерия">Финансы & Бухгалтерия</option>
+                  <option value="Другое">Другое</option>
+                </select>
+              </div>
+              <span class="field-error" id="error-category"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="desiredRole" class="form-label required">Желаемая роль / Должность</label>
+              <div class="input-with-icon">
+                <i data-lucide="award"></i>
+                <input type="text" id="desiredRole" name="desiredRole" placeholder="Например: Fullstack C# Developer" required>
+              </div>
+              <span class="field-error" id="error-desiredRole"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="experience" class="form-label required">Опыт работы</label>
+              <div class="input-with-icon">
+                <i data-lucide="clock"></i>
+                <select id="experience" name="experience" required>
+                  <option value="" disabled selected>Укажите стаж</option>
+                  <option value="Без опыта">Без опыта / Начинающий</option>
+                  <option value="От 1 до 3 лет">От 1 до 3 лет</option>
+                  <option value="От 3 до 5 лет">От 3 до 5 лет</option>
+                  <option value="Более 5 лет">Более 5 лет</option>
+                </select>
+              </div>
+              <span class="field-error" id="error-experience"></span>
+            </div>
+          </div>
+
+          <div class="form-grid cols-2">
+            <div class="form-group">
+              <label for="workFormat" class="form-label required">Формат работы</label>
+              <div class="input-with-icon">
+                <i data-lucide="laptop"></i>
+                <select id="workFormat" name="workFormat" required>
+                  <option value="Удалённая работа" selected>Удалённая работа (Remote)</option>
+                  <option value="Гибридный график">Гибридный график (Офис + Дом)</option>
+                  <option value="В офисе компании">В офисе компании</option>
+                  <option value="Проектная занятость">Проектная занятость / Контракт</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="salaryExpectation" class="form-label">Ожидания по доходу (в месяц)</label>
+              <div class="input-with-icon">
+                <i data-lucide="credit-card"></i>
+                <input type="text" id="salaryExpectation" name="salaryExpectation" placeholder="Например: 160 000 ₽">
+              </div>
+            </div>
+          </div>
+
+          <!-- Навыки (Теги) -->
+          <div class="form-group">
+            <label class="form-label">Ключевые навыки и стек технологий</label>
+            <div class="skills-input-container" id="skills-container">
+              <div id="skills-list" class="skills-chips-wrapper"></div>
+              <input type="text" id="skill-input-field" placeholder="Введите навык и нажмите Enter (например: C#, ASP.NET, AJAX, SQL)...">
+            </div>
+            <p class="form-hint">Нажмите Enter или запятую для добавления навыка. Нажмите крестик на бейдже для удаления.</p>
+          </div>
+        </div>
+
+        <!-- Секция 4: О себе -->
+        <div class="form-section">
+          <div class="section-title">
+            <i data-lucide="align-left"></i>
+            <h2>4. О соискателе / Сопроводительный текст</h2>
+          </div>
+
+          <div class="form-group">
+            <label for="aboutMe" class="form-label">Опишите ваши сильные стороны, проекты или достижения</label>
+            <textarea id="aboutMe" name="aboutMe" rows="4" placeholder="Расскажите о выполненных задачах, технологиях, опыте работы в команде или профессиональных целях..."></textarea>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="consentCheck" required checked>
+              <span class="custom-checkbox"></span>
+              <span class="checkbox-text">Я даю согласие на обработку персональных данных и подтверждаю их достоверность.</span>
+            </label>
+            <span class="field-error" id="error-consentCheck"></span>
+          </div>
+        </div>
+
+        <!-- Кнопки управления формой -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="fill-sample-btn">
+            <i data-lucide="wand-2"></i>
+            <span>Заполнить демо-данными</span>
+          </button>
+          
+          <button type="submit" class="btn btn-primary" id="submit-btn">
+            <span class="btn-spinner" id="submit-spinner" style="display: none;"></span>
+            <span id="submit-text">Отправить через AJAX</span>
+            <i data-lucide="send" id="submit-icon"></i>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ==================== ЭКРАН 2: УСПЕШНОЕ ЗАПОЛНЕНИЕ ==================== -->
+    <section id="screen-success" class="app-screen">
+      <div class="success-card glassmorphism">
+        <div class="success-icon-wrapper">
+          <div class="success-icon-pulse"></div>
+          <div class="success-icon-inner">
+            <i data-lucide="check"></i>
+          </div>
+        </div>
+
+        <span class="status-badge success">Успешно обработано сервером ASP.NET!</span>
+        
+        <h2 class="success-title">Заявка успешно зарегистрирована!</h2>
+        <p class="success-text">
+          AJAX-запрос был успешно обработан контроллером ASP.NET Core. Данные сохранены в базе заявок, и для соискателя сформирована официальная анкета.
+        </p>
+
+        <div class="application-meta-box">
+          <div class="meta-item">
+            <span class="meta-label">Номер заявки</span>
+            <span class="meta-value" id="success-app-id">#APP-2026-0000</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <span class="meta-label">Дата и время регистрации</span>
+            <span class="meta-value" id="success-timestamp">08.09.2026 12:00</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <span class="meta-label">Текущий статус</span>
+            <span class="meta-value text-success">На рассмотрении</span>
+          </div>
+        </div>
+
+        <div class="success-actions">
+          <button type="button" class="btn btn-primary btn-large" id="view-profile-btn">
+            <i data-lucide="user-check"></i>
+            <span>Посмотреть анкету человека</span>
+          </button>
+          <button type="button" class="btn btn-secondary" id="success-new-app-btn">
+            <i data-lucide="plus"></i>
+            <span>Подать новую заявку</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ЭКРАН 3: АНКЕТА ЧЕЛОВЕКА ==================== -->
+    <section id="screen-profile" class="app-screen">
+      
+      <!-- Панель действий анкеты (скрывается при печати) -->
+      <div class="profile-toolbar no-print">
+        <button type="button" class="btn btn-ghost" id="back-to-form-btn">
+          <i data-lucide="arrow-left"></i>
+          <span>К форме</span>
+        </button>
+
+        <div class="toolbar-actions">
+          <button type="button" class="btn btn-secondary" id="edit-profile-btn">
+            <i data-lucide="edit-3"></i>
+            <span>Редактировать данные</span>
+          </button>
+          <button type="button" class="btn btn-secondary" id="copy-summary-btn">
+            <i data-lucide="copy"></i>
+            <span id="copy-btn-text">Скопировать резюме</span>
+          </button>
+          <button type="button" class="btn btn-primary" id="print-profile-btn">
+            <i data-lucide="printer"></i>
+            <span>Печать / Экспорт в PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Сама карточка анкеты (для экрана и для печати) -->
+      <div class="profile-card" id="printable-profile">
+        
+        <!-- Верхний колонтитул анкеты -->
+        <div class="profile-header-banner">
+          <div class="banner-badge">
+            <i data-lucide="badge-check"></i> Официальная анкета соискателя
+          </div>
+          <div class="banner-app-info">
+            <span id="profile-id-display">Заявка № APP-2026-0000</span>
+            <span class="dot-separator">•</span>
+            <span id="profile-date-display">08.09.2026</span>
+          </div>
+        </div>
+
+        <!-- Главный блок визитки -->
+        <div class="profile-hero">
+          <div class="profile-avatar-container">
+            <img id="profile-avatar-img" src="" alt="Фотография соискателя">
+          </div>
+
+          <div class="profile-hero-content">
+            <div class="profile-status-row">
+              <span class="status-chip active">
+                <span class="status-indicator"></span> Статус: На рассмотрении
+              </span>
+              <span class="format-chip" id="profile-format-chip">
+                <i data-lucide="laptop"></i> Удалённо
+              </span>
+            </div>
+
+            <h1 class="profile-name" id="profile-full-name">Константинопольский Александр</h1>
+            <p class="profile-role" id="profile-target-role">Fullstack .NET Developer</p>
+
+            <div class="profile-quick-details">
+              <div class="quick-detail-item">
+                <i data-lucide="map-pin"></i>
+                <span id="profile-city">Москва</span>
+              </div>
+              <div class="quick-detail-item">
+                <i data-lucide="user"></i>
+                <span id="profile-age">28 лет (Мужской)</span>
+              </div>
+              <div class="quick-detail-item">
+                <i data-lucide="briefcase"></i>
+                <span id="profile-experience">Опыт: 3-5 лет</span>
+              </div>
+              <div class="quick-detail-item highlight">
+                <i data-lucide="wallet"></i>
+                <span id="profile-salary">160 000 ₽ / мес</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Блок кликабельных контактов -->
+        <div class="profile-contacts-bar">
+          <div class="contact-item" id="contact-phone-item">
+            <div class="contact-icon"><i data-lucide="phone"></i></div>
+            <div class="contact-text">
+              <span class="contact-label">Телефон</span>
+              <a href="#" id="profile-phone-link" class="contact-value">+7 (999) 000-00-00</a>
+            </div>
+          </div>
+
+          <div class="contact-item" id="contact-email-item">
+            <div class="contact-icon"><i data-lucide="mail"></i></div>
+            <div class="contact-text">
+              <span class="contact-label">Электронная почта</span>
+              <a href="#" id="profile-email-link" class="contact-value">alexander@domain.ru</a>
+            </div>
+          </div>
+
+          <div class="contact-item" id="contact-telegram-item">
+            <div class="contact-icon"><i data-lucide="send"></i></div>
+            <div class="contact-text">
+              <span class="contact-label">Telegram</span>
+              <a href="#" id="profile-telegram-link" target="_blank" class="contact-value">@username</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Сетка подробной информации -->
+        <div class="profile-details-grid">
+          
+          <!-- Левая колонка: Навыки и параметры -->
+          <div class="details-column">
+            
+            <div class="details-section">
+              <h3 class="details-section-title">
+                <i data-lucide="code-2"></i>
+                Ключевые компетенции и стек
+              </h3>
+              <div class="skills-tags-cloud" id="profile-skills-cloud">
+                <!-- Теги заполняются из JS -->
+              </div>
+            </div>
+
+            <div class="details-section">
+              <h3 class="details-section-title">
+                <i data-lucide="sliders"></i>
+                Параметры занятости
+              </h3>
+              <ul class="details-param-list">
+                <li>
+                  <span class="param-name">Сфера деятельности:</span>
+                  <span class="param-val" id="profile-field-category">IT & Программирование</span>
+                </li>
+                <li>
+                  <span class="param-name">Формат работы:</span>
+                  <span class="param-val" id="profile-field-format">Удалённый</span>
+                </li>
+                <li>
+                  <span class="param-name">Стаж в отрасли:</span>
+                  <span class="param-val" id="profile-field-exp">От 3 до 5 лет</span>
+                </li>
+                <li>
+                  <span class="param-name">Ожидаемый доход:</span>
+                  <span class="param-val" id="profile-field-salary">160 000 ₽</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Правая колонка: О соискателе / Сопроводительное -->
+          <div class="details-column">
+            <div class="details-section h-full">
+              <h3 class="details-section-title">
+                <i data-lucide="file-badge"></i>
+                О соискателе / Сопроводительное письмо
+              </h3>
+              <div class="profile-bio-text" id="profile-bio">
+                Краткая характеристика соискателя...
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Подвал официальной анкеты -->
+        <div class="profile-card-footer">
+          <div class="footer-stamp">
+            <div class="stamp-icon"><i data-lucide="shield-check"></i></div>
+            <div class="stamp-text">
+              <span class="stamp-title">Электронная верификация ASP.NET Core Server</span>
+              <span class="stamp-date" id="profile-footer-stamp">Проверено и сохранено: 08.09.2026</span>
+            </div>
+          </div>
+          <div class="footer-qr-placeholder">
+            <div class="qr-mock">
+              <i data-lucide="qr-code"></i>
+            </div>
+            <span>ID: <span id="profile-footer-id">APP-0000</span></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== МОДАЛЬНОЕ ОКНО: ИСТОРИЯ АНКЕТ ==================== -->
+    <div id="history-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-window glassmorphism">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <i data-lucide="history"></i>
+            <h2>История поданных заявок (ASP.NET DB)</h2>
+          </div>
+          <button type="button" class="btn-icon" id="close-history-btn">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div id="history-empty" class="empty-state">
+            <i data-lucide="inbox"></i>
+            <p>В базе данных пока нет сохранённых заявок.</p>
+            <span>Заполните и отправьте форму через AJAX, чтобы анкета появилась здесь.</span>
+          </div>
+          <div id="history-list" class="history-cards-list"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-text-danger" id="clear-all-history-btn">
+            <i data-lucide="trash-2"></i> Очистить базу на сервере
+          </button>
+          <button type="button" class="btn btn-secondary" id="close-history-footer-btn">
+            Закрыть
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Всплывающие уведомления (Toast) -->
+  <div id="toast" class="toast-notification"></div>
+
+  <footer class="app-footer no-print">
+    <div class="footer-inner">
+      <p>© 2026 QuestPortal &bull; Построено на <strong>ASP.NET Core 8.0</strong> &bull; Асинхронная передача данных по протоколу <strong>AJAX (JSON)</strong></p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
