@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ValidationDemo</name>
+    </assembly>
+    <members>
+        <member name="T:ValidationDemo.Controllers.AuthController">
+            <summary>
+            Демонстрация валидации через Data Annotations (RegisterRequest).
+            [ApiController] автоматически возвращает 400 ValidationProblemDetails при невалидном ModelState.
+            </summary>
+        </member>
+        <member name="M:ValidationDemo.Controllers.AuthController.Register(ValidationDemo.Models.Requests.RegisterRequest)">
+            <summary>
+            Регистрация пользователя.
+            Валидируется: Email, Password (длина + regex), ConfirmPassword (Compare), Age (Range).
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Controllers.EventsController">
+            <summary>
+            Демонстрация кастомного ValidationAttribute [NotInFuture].
+            </summary>
+        </member>
+        <member name="M:ValidationDemo.Controllers.EventsController.CreateEvent(ValidationDemo.Models.Requests.EventRequest)">
+            <summary>
+            Создание события.
+            Дата не может быть в будущем — проверяется кастомным атрибутом [NotInFuture].
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Controllers.OrdersController">
+            <summary>
+            Демонстрация двух паттернов:
+            1. IValidatableObject (DateRangeRequest) — межполевая валидация.
+            2. Вложенные объекты (OrderRequest с CustomerDto и OrderItemDto).
+            </summary>
+        </member>
+        <member name="M:ValidationDemo.Controllers.OrdersController.GetReport(ValidationDemo.Models.Requests.DateRangeRequest)">
+            <summary>
+            Запрос отчёта за диапазон дат.
+            To должно быть больше From, диапазон не более 365 дней — IValidatableObject.
+            </summary>
+        </member>
+        <member name="M:ValidationDemo.Controllers.OrdersController.CreateOrder(ValidationDemo.Models.Requests.OrderRequest)">
+            <summary>
+            Создание заказа. Демонстрация валидации вложенных объектов.
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Controllers.ProductsController">
+            <summary>
+            Демонстрация FluentValidation и GlobalExceptionHandler.
+            </summary>
+        </member>
+        <member name="M:ValidationDemo.Controllers.ProductsController.CreateProduct(ValidationDemo.Models.Requests.CreateProductRequest)">
+            <summary>
+            Создание продукта. Валидация через FluentValidation (CreateProductValidator).
+            </summary>
+        </member>
+        <member name="M:ValidationDemo.Controllers.ProductsController.GetProduct(System.Int32)">
+            <summary>
+            Получение продукта по id.
+            Если id > 100 — бросает KeyNotFoundException → GlobalExceptionHandler → 404 ProblemDetails.
+            Если id == 0  — бросает ArgumentException   → GlobalExceptionHandler → 400 ProblemDetails.
+            </summary>
+        </member>
+        <member name="M:ValidationDemo.Controllers.ProductsController.GetWithManualProblem(System.Int32)">
+            <summary>
+            Демо: ручной возврат 404 через Problem() helper.
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Infrastructure.CustomProblemDetailsFactory">
+            <summary>
+            Кастомная фабрика ProblemDetails.
+            Добавляет к каждому ответу: traceId, timestamp, environment (в режиме разработки).
+            </summary>
+        </member>
+        <member name="M:ValidationDemo.Infrastructure.CustomProblemDetailsFactory.Enrich(Microsoft.AspNetCore.Mvc.ProblemDetails,Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Обогащает ProblemDetails дополнительными полями (extensions).
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Infrastructure.GlobalExceptionHandler">
+            <summary>
+            Глобальный обработчик необработанных исключений.
+            Реализует IExceptionHandler — маппинг типов исключений на HTTP-статусы.
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Models.Requests.CreateProductRequest">
+            <summary>
+            Запрос создания продукта — валидируется через FluentValidation.
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Models.Requests.DateRangeRequest">
+            <summary>
+            Запрос диапазона дат — демонстрация IValidatableObject (межполевая валидация).
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Models.Requests.EventRequest">
+            <summary>
+            Запрос события — демонстрация кастомного ValidationAttribute [NotInFuture].
+            </summary>
+        </member>
+        <member name="P:ValidationDemo.Models.Requests.EventRequest.Date">
+            <summary>
+            Дата события (не может быть в будущем).
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Models.Requests.OrderRequest">
+            <summary>
+            Запрос заказа — демонстрация валидации вложенных объектов.
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Models.Requests.RegisterRequest">
+            <summary>
+            Запрос на регистрацию — демонстрация стандартных Data Annotations.
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Validation.CreateProductValidator">
+            <summary>
+            FluentValidation-валидатор для CreateProductRequest.
+            Демонстрирует: NotEmpty, MinimumLength, MaximumLength, GreaterThan, LessThan, условие When.
+            </summary>
+        </member>
+        <member name="T:ValidationDemo.Validation.NotInFutureAttribute">
+            <summary>
+            Кастомный атрибут валидации: дата не может быть в будущем.
+            Наследует ValidationAttribute и переопределяет IsValid.
+            </summary>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+    </members>
+</doc>
