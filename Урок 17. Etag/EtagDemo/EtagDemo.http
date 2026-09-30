@@ -1,0 +1,6 @@
+@EtagDemo_HostAddress = http://localhost:5138
+
+GET {{EtagDemo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
