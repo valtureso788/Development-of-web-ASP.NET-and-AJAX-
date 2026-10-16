@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="BffDemo/BffDemo.csproj" />
-  <Project Path="CookieAuth/CookieAuth.csproj" />
-  <Project Path="JwtAuth/JwtAuth.csproj" />
-</Solution>
